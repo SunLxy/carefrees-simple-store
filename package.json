@@ -6,7 +6,7 @@
     "examples"
   ],
   "scripts": {
-    "build": "npm run-script build --workspace simple-markdown-preview",
+    "build": "npm run-script build --workspace @carefrees/simple-store",
     "version": "lerna version --exact --force-publish --no-push --no-git-tag-version"
   },
   "devDependencies": {
