@@ -35,7 +35,6 @@ export const useUpdate = () => {
   const [_, _update] = useState<number>(0)
   /**为了防止 hooks 闭包问题*/
   const refUpdate = useRef(_update)
-  refUpdate.current = _update
 
   refUpdate.current = () => {
     _update(new Date().getTime())
