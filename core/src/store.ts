@@ -15,6 +15,12 @@ export class SimpleStore<T extends {} = any> {
     this.store = (initialValue || {}) as T
   }
 
+  /**注册组件更新方法*/
+  register = (path: PathTypes, fun: Function) => {
+    const newPath = getFormatPath(path)
+    this.componentMap.set(newPath, fun)
+  }
+
   /**更新值*/
   updateValue = <K = any>(path: PathTypes, value: K) => {
     this.store = setValue(this.store, toArray(path), value)
