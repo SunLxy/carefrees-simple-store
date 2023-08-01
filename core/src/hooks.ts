@@ -1,6 +1,6 @@
-import { createContext, useRef, useContext, createElement, useState } from "react"
+import { createContext, useRef, useContext, createElement, useState, useMemo } from "react"
 import { SimpleStore } from "./store"
-import { SimpleProviderProps } from "./interface"
+import { SimpleProviderProps, UseSimpleProps } from "./interface"
 
 export const SimpleContext = createContext(new SimpleStore())
 
@@ -28,7 +28,6 @@ export const SimpleProvider = (props: SimpleProviderProps) => {
   })
 }
 
-export const useSimple = () => useContext(SimpleContext)
 
 /**更新页面状态*/
 export const useUpdate = () => {
@@ -38,9 +37,23 @@ export const useUpdate = () => {
   const refUpdate = useRef(_update)
   refUpdate.current = _update
 
-  const _onUpdate = () => {
-    refUpdate.current(new Date().getTime())
+  refUpdate.current = () => {
+    _update(new Date().getTime())
   }
 
-  return [_onUpdate]
+  return refUpdate
 }
+
+export const useSimple = (props: UseSimpleProps) => {
+  const { path } = props
+  const refUpdate = useUpdate()
+  const simple = useContext(SimpleContext)
+
+  /**更新组件方法注册*/
+  useMemo(() => {
+    simple.register(path, refUpdate.current)
+  }, [path])
+
+  return simple
+}
+
