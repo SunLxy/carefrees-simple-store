@@ -52,7 +52,7 @@ jobs:
         tag: ${{ steps.create_tag.outputs.version }}
         body: |
           ```bash
-          npm i simple-markdown-preview@${{steps.create_tag.outputs.version}}
+          npm i @carefrees/simple-store@${{steps.create_tag.outputs.version}}
           ```
           ${{ steps.changelog.outputs.compareurl }}
           ${{ steps.changelog.outputs.changelog }}
