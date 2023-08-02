@@ -1,2 +1,7 @@
 import ReactDOM from 'react-dom/client';
-ReactDOM.createRoot(document.getElementById('root')!).render(<div>222</div>);
+import { SimplePreview } from "simple-markdown-preview"
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <SimplePreview
+    path={() => import("@carefrees/simple-store/README.md")}
+  />,
+);

@@ -9,5 +9,6 @@ export interface SimpleProviderProps {
 }
 
 export interface UseSimpleProps {
+  /**路径*/
   path: PathTypes
 }
