@@ -7,12 +7,13 @@ export interface RegisterProps {
   path: PathTypes,
   update: Function
 }
-export interface SimpleProviderProps {
+export interface SimpleStoreProviderProps<T extends {} = any> {
   simple?: SimpleStore
   children?: React.ReactNode
+  initialValue?: T
 }
 
-export interface UseSimpleProps {
+export interface UseSimpleStoreItemProps {
   /**路径*/
   path: PathTypes
 }

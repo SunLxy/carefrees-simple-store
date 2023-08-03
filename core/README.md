@@ -7,25 +7,24 @@
 
 ## 状态包裹组件
 
-- `SimpleProvider`
+- `SimpleStoreProvider`
 
 ## hooks
 
 - `useSimpleStore` 实例化方法
-- `useSimple` 子组件使用数据更新和取值
+- `useSimpleStoreItem` 子组件使用数据更新和取值
 
 ## 参数
 
 ```ts
-import { PathTypes } from "./interface";
 /**状态存储*/
 export declare class SimpleStore<T extends {} = any> {
     /**值存储*/
     private store;
-    /**组件更新方法集合*/
-    componentMap: Map<string, Function>;
+      /**组件更新方法集合*/
+    componentList: RegisterProps[]
     /**设置初始值*/
-    init: (initialValue: T) => void;
+    init: (initialValue?: T) => void;
     /**注册组件更新方法*/
     register: (path: PathTypes, fun: Function) => void;
     /**更新值*/
@@ -42,13 +41,18 @@ export declare class SimpleStore<T extends {} = any> {
 
 export type PathTypes = number | string | (number | string)[]
 
-export interface SimpleProviderProps {
+export interface RegisterProps {
+  path: PathTypes,
+  update: Function
+}
+export interface SimpleStoreProviderProps<T extends {} = any> {
   simple?: SimpleStore
   children?: React.ReactNode
+  initialValue?: T
 }
 
-export interface UseSimpleProps {
-  /**数据更新路径*/
+export interface UseSimpleStoreItemProps {
+  /**路径*/
   path: PathTypes
 }
 
@@ -58,11 +62,11 @@ export interface UseSimpleProps {
 
 ```tsx mdx:preview
 import React from "react"
-import { SimpleProvider, useSimple } from "@carefrees/simple-store"
+import { SimpleStoreProvider, useSimpleStoreItem } from "@carefrees/simple-store"
 
 const Child = (props: { index: number }) => {
   const { index } = props
-  const simple = useSimple({ path: index })
+  const simple = useSimpleStoreItem({ path: index })
   // 这个值，当组件不重新渲染的时候，获取的值是老的，当重新渲染才是最新的
   const checkValue = simple.getValue("checkValue")
   const onClick = () => {
@@ -83,9 +87,9 @@ const Demo = () => {
   return <div>
     <div>选中项</div>
     <hr />
-    <SimpleProvider>
+    <SimpleStoreProvider>
       {list.map((ite) => <Child key={ite.index} index={ite.index} />)}
-    </SimpleProvider>
+    </SimpleStoreProvider>
     <hr />
   </div>
 }
@@ -96,11 +100,11 @@ export default Demo;
 
 ```tsx mdx:preview
 import React from "react"
-import { SimpleProvider, useSimple, useSimpleStore } from "@carefrees/simple-store"
+import { SimpleStoreProvider, useSimpleStoreItem, useSimpleStore } from "@carefrees/simple-store"
 
 const Item = (props: { name: string }) => {
 
-  const simple = useSimple({ path: props.name })
+  const simple = useSimpleStoreItem({ path: props.name })
   const value = simple.getValue(props.name)
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -131,7 +135,7 @@ const Form = () => {
     <button onClick={onSubmit} >获取表单值</button>
     <button onClick={setValue} >设置 1号值 </button>
     <br />
-    <SimpleProvider simple={simple} >
+    <SimpleStoreProvider simple={simple} >
       <Item name="1号" />
       <Item name="1号" />
       <Item name="2号" />
@@ -141,7 +145,7 @@ const Form = () => {
       <Item name="5号" />
       <Item name="6号" />
       <Item name="6号" />
-    </SimpleProvider>
+    </SimpleStoreProvider>
     <hr />
   </div>
 }

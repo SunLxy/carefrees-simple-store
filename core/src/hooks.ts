@@ -1,11 +1,11 @@
 import { createContext, useRef, useContext, createElement, useState, useMemo, useEffect } from "react"
 import { SimpleStore } from "./store"
-import { SimpleProviderProps, UseSimpleProps } from "./interface"
+import { SimpleStoreProviderProps, UseSimpleStoreItemProps } from "./interface"
 
 export const SimpleContext = createContext(new SimpleStore())
 
 export const useSimpleStore = <T extends {} = any>(simple?: SimpleStore) => {
-  const refs = useRef<SimpleStore>()
+  const refs = useRef<SimpleStore<T>>()
   if (!refs.current) {
     if (simple) {
       refs.current = simple
@@ -16,11 +16,17 @@ export const useSimpleStore = <T extends {} = any>(simple?: SimpleStore) => {
   return [refs.current]
 }
 
-export const SimpleProvider = (props: SimpleProviderProps) => {
+export const SimpleStoreProvider = <T extends {} = any>(props: SimpleStoreProviderProps<T>) => {
 
-  const { simple, children } = props
+  const { simple, children, initialValue } = props
 
-  const [childSimple] = useSimpleStore(simple)
+  const [childSimple] = useSimpleStore<T>(simple)
+
+  useMemo(() => {
+    if (initialValue) {
+      childSimple.init(initialValue)
+    }
+  }, [])
 
   return createElement(SimpleContext.Provider, {
     value: childSimple,
@@ -43,10 +49,10 @@ export const useUpdate = () => {
   return refUpdate
 }
 
-export const useSimple = (props: UseSimpleProps) => {
+export const useSimpleStoreItem = <T extends {} = any>(props: UseSimpleStoreItemProps) => {
   const { path } = props
   const refUpdate = useUpdate()
-  const simple = useContext(SimpleContext)
+  const simple = useContext<SimpleStore<T>>(SimpleContext)
 
   /**更新组件方法注册*/
   useEffect(() => {
