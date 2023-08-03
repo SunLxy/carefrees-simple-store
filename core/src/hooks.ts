@@ -1,4 +1,4 @@
-import { createContext, useRef, useContext, createElement, useState, useMemo } from "react"
+import { createContext, useRef, useContext, createElement, useState, useMemo, useEffect } from "react"
 import { SimpleStore } from "./store"
 import { SimpleProviderProps, UseSimpleProps } from "./interface"
 
@@ -49,8 +49,12 @@ export const useSimple = (props: UseSimpleProps) => {
   const simple = useContext(SimpleContext)
 
   /**更新组件方法注册*/
-  useMemo(() => {
-    simple.register(path, refUpdate.current)
+  useEffect(() => {
+    const unRegister = simple.register({
+      path,
+      update: refUpdate.current
+    })
+    return () => unRegister()
   }, [path])
 
   return simple

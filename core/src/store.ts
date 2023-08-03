@@ -1,5 +1,5 @@
 import { getFormatPath, toArray, splitPath, getValue, setValue } from "./utils"
-import { PathTypes } from "./interface"
+import { PathTypes, RegisterProps } from "./interface"
 
 /**状态存储*/
 export class SimpleStore<T extends {} = any> {
@@ -9,6 +9,7 @@ export class SimpleStore<T extends {} = any> {
 
   /**组件更新方法集合*/
   componentMap: Map<string, Function> = new Map([])
+  componentList: RegisterProps[] = []
 
   /**设置初始值*/
   init = (initialValue: T) => {
@@ -16,9 +17,11 @@ export class SimpleStore<T extends {} = any> {
   }
 
   /**注册组件更新方法*/
-  register = (path: PathTypes, fun: Function) => {
-    const newPath = getFormatPath(path)
-    this.componentMap.set(newPath, fun)
+  register = (props: RegisterProps) => {
+    this.componentList.push(props)
+    return () => {
+      this.componentList = this.componentList.filter((ite) => ite !== props)
+    }
   }
 
   /**更新值*/
@@ -46,11 +49,13 @@ export class SimpleStore<T extends {} = any> {
   /**通知组件更新*/
   notice = (path: PathTypes) => {
     const newPath = getFormatPath(path)
-    const fun = this.componentMap.get(newPath)
-    // 通知更新组件
-    if (typeof fun === "function") {
-      fun()
-    }
+    const componentList = this.componentList.filter((item) => getFormatPath(item.path) === newPath)
+    componentList.forEach((component) => {
+      /**通知更新组件*/
+      if (component && typeof component.update === "function") {
+        component.update()
+      }
+    })
   }
 
   /**批量更新组件*/
@@ -61,7 +66,6 @@ export class SimpleStore<T extends {} = any> {
       }
     })
   }
-
 
 }
 

@@ -12,10 +12,10 @@
     "simple-markdown-preview": "0.0.7"
   },
   "devDependencies": {
-    "@saqu/loader-md-react-preview": "~0.1.18",
+    "@saqu/loader-md-react-preview": "~0.1.20",
     "@types/react": "~18.2.15",
     "@types/react-dom": "~18.2.7",
-    "saqu": "^0.1.18"
+    "saqu": "^0.1.20"
   },
   "scripts": {
     "start": "saqu start",

@@ -110,7 +110,7 @@ const Item = (props: { name: string }) => {
 
   console.log("表单====>", props.name)
 
-  return <input value={value || ''} onChange={onChange} />
+  return <input placeholder={`${props.name}`}  value={value || ''} onChange={onChange}  />
 }
 
 const Form = () => {
@@ -133,10 +133,13 @@ const Form = () => {
     <br />
     <SimpleProvider simple={simple} >
       <Item name="1号" />
+      <Item name="1号" />
       <Item name="2号" />
       <Item name="3号" />
       <Item name="4号" />
       <Item name="5号" />
+      <Item name="5号" />
+      <Item name="6号" />
       <Item name="6号" />
     </SimpleProvider>
     <hr />
