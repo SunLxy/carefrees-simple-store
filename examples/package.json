@@ -2,6 +2,7 @@
   "name": "examples",
   "version": "0.0.2",
   "private": true,
+  "homepage": "https://sunlxy.github.io/carefrees-simple-store",
   "dependencies": {
     "@carefrees/simple-store": "0.0.2",
     "react": "~18.2.0",

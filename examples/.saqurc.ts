@@ -5,6 +5,11 @@ export default () => defineConfig({
   output: {
     publicPath: './'
   },
+  builtins: {
+    minifyOptions: {
+      dropConsole: false
+    }
+  },
   module: {
     rules: [
       {

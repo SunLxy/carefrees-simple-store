@@ -77,7 +77,9 @@ const Child = (props: { index: number }) => {
 }
 
 const list = Array.from({ length: 10 }).map((_, index) => ({ index }))
+
 const Demo = () => {
+  
   return <div>
     <div>选中项</div>
     <hr />
