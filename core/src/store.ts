@@ -58,13 +58,28 @@ export class SimpleStore<T extends {} = any> {
     })
   }
 
-  /**批量更新组件*/
-  bathNotice = (paths: string[]) => {
-    paths.forEach((path) => {
-      if (path) {
-        this.notice(splitPath(path))
-      }
-    })
+  /**
+   * 批量更新组件， 
+   * 
+   * 当不传递值的时候，更新所有组件
+  */
+  bathNotice = (paths?: string[]) => {
+    if (Array.isArray(paths)) {
+      paths.forEach((path) => {
+        if (path) {
+          this.notice(splitPath(path))
+        }
+      })
+    } else {
+      // 更新所有组件
+      this.componentList.forEach((component) => {
+        /**通知更新组件*/
+        if (component && typeof component.update === "function") {
+          component.update()
+        }
+      })
+    }
+
   }
 
 }
