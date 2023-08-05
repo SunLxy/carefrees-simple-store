@@ -49,6 +49,8 @@ export const useUpdate = () => {
   return refUpdate
 }
 
+export const useSimple = <T extends {} = any>() => useContext<SimpleStore<T>>(SimpleContext)
+
 export const useSimpleStoreItem = <T extends {} = any>(props: UseSimpleStoreItemProps) => {
   const { path } = props
   const refUpdate = useUpdate()
