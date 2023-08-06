@@ -28,9 +28,9 @@ export declare class SimpleStore<T extends {} = any> {
     /**注册组件更新方法*/
     register: (path: PathTypes, fun: Function) => void;
     /**更新值*/
-    updateValue: <K = any>(path: PathTypes, value: K) => void;
+    updateValue: <K = any>(path: PathTypes, value: K ,notice: boolean | string[] ) => void;
     /**批量数据更新*/
-    bathUpdateValue: (values: Record<string, any>) => void;
+    bathUpdateValue: (values: Record<string, any>,notice: boolean | string[] ) => void;
     /**获取值*/
     getValue: (path?: PathTypes) => any;
     /**通知组件更新*/
