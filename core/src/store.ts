@@ -72,7 +72,7 @@ export class SimpleStore<T extends {} = any> {
    * 
    * 当不传递值的时候，更新所有组件
   */
-  bathNotice = (paths?: string[] | boolean) => {
+  bathNotice = (paths: string[] | boolean = true) => {
     if (Array.isArray(paths)) {
       paths.forEach((path) => {
         if (path) {
