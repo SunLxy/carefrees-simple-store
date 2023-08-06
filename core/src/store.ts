@@ -24,18 +24,26 @@ export class SimpleStore<T extends {} = any> {
   }
 
   /**更新值*/
-  updateValue = <K = any>(path: PathTypes, value: K) => {
+  updateValue = <K = any>(path: PathTypes, value: K, notice: boolean | string[] = true) => {
     this.store = setValue(this.store, toArray(path), value)
-    this.notice(path)
+    if (typeof notice === "boolean" && notice) {
+      this.notice(path)
+    } else if (Array.isArray(notice)) {
+      this.bathNotice(notice)
+    }
   }
 
   /**批量数据更新*/
-  bathUpdateValue = (values: Record<string, any>) => {
+  bathUpdateValue = (values: Record<string, any>, notice: boolean | string[] = true) => {
     if (values) {
       Object.entries(values).forEach(([path, value]) => {
         this.store = setValue(this.store, splitPath(path), value)
       })
-      this.bathNotice(Object.keys(values))
+      if (typeof notice === "boolean" && notice) {
+        this.bathNotice(Object.keys(values))
+      } else if (Array.isArray(notice)) {
+        this.bathNotice(notice)
+      }
     }
   }
 
@@ -64,14 +72,14 @@ export class SimpleStore<T extends {} = any> {
    * 
    * 当不传递值的时候，更新所有组件
   */
-  bathNotice = (paths?: string[]) => {
+  bathNotice = (paths?: string[] | boolean) => {
     if (Array.isArray(paths)) {
       paths.forEach((path) => {
         if (path) {
           this.notice(splitPath(path))
         }
       })
-    } else {
+    } else if (typeof paths === "boolean" && paths) {
       // 更新所有组件
       this.componentList.forEach((component) => {
         /**通知更新组件*/
