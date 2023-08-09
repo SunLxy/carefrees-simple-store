@@ -1,5 +1,5 @@
-import { getFormatPath, toArray, splitPath, getValue, setValue } from "./utils"
-import { PathTypes, RegisterProps } from "./interface"
+import { getFormatPath, toArray, splitPath, getValue, setValue, merge } from "./utils"
+import { PathTypes, RegisterProps, RegisterWatchProps } from "./interface"
 
 /**状态存储*/
 export class SimpleStore<T extends {} = any> {
@@ -7,12 +7,18 @@ export class SimpleStore<T extends {} = any> {
   /**值存储*/
   private store: T = {} as T;
 
+  private initialValue: T = {} as T;
+
   /**组件更新方法集合*/
   componentList: RegisterProps[] = []
 
+  /**监听字段值变化*/
+  watchList: RegisterWatchProps[] = []
+
   /**设置初始值*/
   init = (initialValue?: T) => {
-    this.store = (initialValue || {}) as T
+    this.initialValue = (initialValue || {}) as T
+    this.store = merge(this.initialValue, this.store)
   }
 
   /**注册组件更新方法*/
@@ -20,12 +26,38 @@ export class SimpleStore<T extends {} = any> {
     this.componentList.push(props)
     return () => {
       this.componentList = this.componentList.filter((ite) => ite !== props)
+      const { preserve = true } = props
+      /**查询是否存在相同字段的组件*/
+      const finx = this.componentList.find((item) => getFormatPath(item.path) === getFormatPath(props.path))
+      /**当不存储 并且 没有相同字段组件的时候*/
+      if (!preserve && !finx) {
+        /**
+        * 1. 通过参数控制卸载组件是否进行初始化参数
+        * 2. 判断当前组件是否已经不存在，不存在则进行初始化
+        * 3. 当前值和默认值相等的时候
+        * */
+        const pathArr = toArray(props.path)
+        const defaultValue = getValue(this.initialValue, pathArr)
+        const value = getValue(this.store, pathArr)
+        if (defaultValue !== value) {
+          this.store = setValue(this.store, pathArr, defaultValue)
+        }
+      }
+    }
+  }
+
+  /**注册监听字段*/
+  registerWatch = (props: RegisterWatchProps) => {
+    this.watchList.push(props)
+    return () => {
+      this.watchList = this.watchList.filter((ite) => ite !== props)
     }
   }
 
   /**更新值*/
   updateValue = <K = any>(path: PathTypes, value: K, notice: boolean | string[] = true) => {
     this.store = setValue(this.store, toArray(path), value)
+    this.noticeWatch(path);
     if (typeof notice === "boolean" && notice) {
       this.notice(path)
     } else if (Array.isArray(notice)) {
@@ -89,6 +121,17 @@ export class SimpleStore<T extends {} = any> {
       })
     }
 
+  }
+
+  /**通知监听*/
+  noticeWatch = (path: PathTypes) => {
+    const watchPath = getFormatPath(path)
+    const value = getValue(this.store, toArray(path))
+    this.watchList.forEach((item) => {
+      if (getFormatPath(item.path) === watchPath) {
+        item.update(value)
+      }
+    })
   }
 
 }

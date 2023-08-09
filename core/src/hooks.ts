@@ -1,6 +1,6 @@
 import { createContext, useRef, useContext, createElement, useState, useMemo, useEffect } from "react"
 import { SimpleStore } from "./store"
-import { SimpleStoreProviderProps, UseSimpleStoreItemProps } from "./interface"
+import { SimpleStoreProviderProps, UseSimpleStoreItemProps, PathTypes } from "./interface"
 
 export const SimpleContext = createContext(new SimpleStore())
 
@@ -63,8 +63,34 @@ export const useSimpleStoreItem = <T extends {} = any>(props: UseSimpleStoreItem
       update: refUpdate.current
     })
     return () => unRegister()
-  }, [path])
+  }, [JSON.stringify(path)])
 
   return simple
 }
 
+export const useSimpleWatch = <T extends {} = any>(simple: SimpleStore<T>, path: PathTypes, fun?: (value: any) => void) => {
+
+  const refValue = useRef<any>()
+  const ref = useRef<(value: any) => void>(() => void 0)
+
+  const refUpdate = useUpdate()
+
+  ref.current = (value: any) => {
+    refValue.current = value;
+    if (typeof fun === "function") {
+      fun(value)
+    } else {
+      refUpdate.current()
+    }
+  }
+
+  useEffect(() => {
+    const unRegister = simple.registerWatch({
+      path,
+      update: ref.current
+    })
+    return () => unRegister()
+  }, [JSON.stringify(path)])
+
+  return refValue.current
+}

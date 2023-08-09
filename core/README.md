@@ -4,6 +4,7 @@
 
 - [ ] 1. 定向更新组件
 - [ ] 2. 数据存储
+- [ ] 3. 监听值变化
 
 ## 状态包裹组件
 
@@ -12,6 +13,8 @@
 ## hooks
 
 - `useSimpleStore` 实例化方法
+- `useSimpleWatch` 监听值变化
+- `useSimple` 子组件中获取实例
 - `useSimpleStoreItem` 子组件使用数据更新和取值
 
 ## 参数
@@ -100,12 +103,14 @@ export default Demo;
 
 ```tsx mdx:preview
 import React from "react"
-import { SimpleStoreProvider, useSimpleStoreItem, useSimpleStore } from "@carefrees/simple-store"
+import { SimpleStoreProvider, useSimpleStoreItem, useSimpleStore,useSimpleWatch} from "@carefrees/simple-store"
 
 const Item = (props: { name: string }) => {
 
   const simple = useSimpleStoreItem({ path: props.name })
   const value = simple.getValue(props.name)
+
+  
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value
@@ -119,6 +124,11 @@ const Item = (props: { name: string }) => {
 
 const Form = () => {
   const [simple] = useSimpleStore()
+  const values = useSimpleWatch(simple,"1号")
+  useSimpleWatch(simple,"1号",(value)=>{
+    console.log("打印哈哈哈====>",value)
+  })
+  console.log("监听 1号 字段 的值变化",values)
 
   const onSubmit = () => {
     const data = simple.getValue()

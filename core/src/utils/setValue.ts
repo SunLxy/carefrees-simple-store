@@ -1,8 +1,9 @@
 import { getValue } from './getValue';
+type Path = (string | number | symbol)[];
 
 const internalSet = <Entity = any, Output = Entity, Value = any>(
   input: Entity,
-  paths: (string | number)[],
+  paths: Path,
   value: Value,
   removeUndefined: boolean,
 ): Output => {
@@ -41,7 +42,7 @@ const internalSet = <Entity = any, Output = Entity, Value = any>(
 /***设置值*/
 export const setValue = <Entity = any, Output = Entity, Value = any>(
   input: Entity,
-  paths: (string | number)[],
+  paths: Path,
   value: Value,
   removeUndefined: boolean = false,
 ): Output => {
@@ -62,3 +63,64 @@ export const setValue = <Entity = any, Output = Entity, Value = any>(
 
   return internalSet(input, paths, value, removeUndefined);
 };
+
+
+
+function isObject(obj: any) {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    Object.getPrototypeOf(obj) === Object.prototype
+  );
+}
+
+function createEmpty<T>(source: T) {
+  return (Array.isArray(source) ? [] : {}) as T;
+}
+
+const keys = typeof Reflect === 'undefined' ? Object.keys : Reflect.ownKeys;
+
+/**
+ * Merge objects which will create
+ */
+export function merge<T extends object>(...sources: T[]) {
+  let clone = createEmpty(sources[0]);
+
+  sources.forEach(src => {
+    function internalMerge(path: Path, parentLoopSet?: Set<object>) {
+      const loopSet = new Set(parentLoopSet);
+
+      const value = getValue(src, path);
+
+      const isArr = Array.isArray(value);
+
+      if (isArr || isObject(value)) {
+        // Only add not loop obj
+        if (!loopSet.has(value)) {
+          loopSet.add(value);
+
+          const originValue = getValue(clone, path);
+
+          if (isArr) {
+            // Array will always be override
+            clone = setValue(clone, path, []);
+          } else if (!originValue || typeof originValue !== 'object') {
+            // Init container if not exist
+            clone = setValue(clone, path, createEmpty(value));
+          }
+
+          keys(value).forEach(key => {
+            internalMerge([...path, key], loopSet);
+          });
+        }
+      } else {
+        clone = setValue(clone, path, value);
+      }
+    }
+
+    internalMerge([]);
+  });
+
+  return clone;
+}
+
