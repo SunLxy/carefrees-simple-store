@@ -63,7 +63,7 @@ export interface UseSimpleStoreItemProps {
 
 ## 选中案例
 
-```tsx
+```tsx mdx:preview
 import React from "react"
 import { SimpleStoreProvider, useSimpleStoreItem } from "@carefrees/simple-store"
 
@@ -101,7 +101,7 @@ export default Demo;
 
 ## 表单案例
 
-```tsx 
+```tsx mdx:preview
 import React from "react"
 import { SimpleStoreProvider, useSimpleStoreItem, useSimpleStore,useSimpleWatch} from "@carefrees/simple-store"
 
