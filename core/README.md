@@ -15,7 +15,7 @@
 - `useSimpleStore` 实例化方法
 - `useSimpleWatch` 监听值变化
 - `useSimple` 子组件中获取实例
-- `useSimpleStoreItem` 子组件使用数据更新和取值
+- `useSimpleItem` 子组件使用数据更新和取值
 
 ## 参数
 
@@ -72,7 +72,7 @@ export interface SimpleStoreProviderProps<T extends {} = any> {
   initialValue?: T
 }
 
-export interface UseSimpleStoreItemProps {
+export interface UseSimpleItemProps {
   /**路径*/
   path: PathTypes
 }
@@ -83,7 +83,7 @@ export declare const SimpleStoreProvider: <T extends {} = any>(props: SimpleStor
 /**更新页面状态*/
 export declare const useUpdate: () => import("react").MutableRefObject<Function>;
 export declare const useSimple: <T extends {} = any>() => SimpleStore<T>;
-export declare const useSimpleItem: <T extends {} = any>(props: UseSimpleStoreItemProps) => SimpleStore<T>;
+export declare const useSimpleItem: <T extends {} = any>(props: UseSimpleItemProps) => SimpleStore<T>;
 export declare const useSimpleWatch: <T extends {} = any>(simple: SimpleStore<T>, path: PathTypes, fun?: (value: any) => void) => any;
 
 
@@ -93,11 +93,11 @@ export declare const useSimpleWatch: <T extends {} = any>(simple: SimpleStore<T>
 
 ```tsx mdx:preview
 import React from "react"
-import { SimpleStoreProvider, useSimpleStoreItem } from "@carefrees/simple-store"
+import { SimpleStoreProvider, useSimpleItem } from "@carefrees/simple-store"
 
 const Child = (props: { index: number }) => {
   const { index } = props
-  const simple = useSimpleStoreItem({ path: index })
+  const simple = useSimpleItem({ path: index })
   // 这个值，当组件不重新渲染的时候，获取的值是老的，当重新渲染才是最新的
   const checkValue = simple.getValue("checkValue")
   const onClick = () => {
@@ -131,11 +131,11 @@ export default Demo;
 
 ```tsx mdx:preview
 import React from "react"
-import { SimpleStoreProvider, useSimpleStoreItem, useSimpleStore,useSimpleWatch} from "@carefrees/simple-store"
+import { SimpleStoreProvider, useSimpleItem, useSimpleStore,useSimpleWatch} from "@carefrees/simple-store"
 
 const Item = (props: { name: string }) => {
 
-  const simple = useSimpleStoreItem({ path: props.name })
+  const simple = useSimpleItem({ path: props.name })
   const value = simple.getValue(props.name)
 
   
@@ -191,10 +191,10 @@ export default Form
 
 ```tsx mdx:preview
 import React from "react"
-import { SimpleStoreProvider, useSimpleStoreItem, useSimpleStore,useSimpleWatch} from "@carefrees/simple-store"
+import { SimpleStoreProvider, useSimpleItem, useSimpleStore,useSimpleWatch} from "@carefrees/simple-store"
 
 const Item = (props: { name: string }) => {
-  const simple = useSimpleStoreItem({ path: props.name })
+  const simple = useSimpleItem({ path: props.name })
   const value = simple.getValue(props.name)
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
