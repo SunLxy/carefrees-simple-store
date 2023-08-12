@@ -25,3 +25,7 @@ export interface UseSimpleStoreItemProps {
   /**路径*/
   path: PathTypes
 }
+
+export interface UseSimpleItemProps extends UseSimpleStoreItemProps {
+
+}

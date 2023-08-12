@@ -1,6 +1,6 @@
 import { createContext, useRef, useContext, createElement, useState, useMemo, useEffect } from "react"
 import { SimpleStore } from "./store"
-import { SimpleStoreProviderProps, UseSimpleStoreItemProps, PathTypes } from "./interface"
+import { SimpleStoreProviderProps, PathTypes, UseSimpleItemProps } from "./interface"
 
 export const SimpleContext = createContext(new SimpleStore())
 
@@ -34,7 +34,6 @@ export const SimpleStoreProvider = <T extends {} = any>(props: SimpleStoreProvid
   })
 }
 
-
 /**更新页面状态*/
 export const useUpdate = () => {
 
@@ -51,7 +50,7 @@ export const useUpdate = () => {
 
 export const useSimple = <T extends {} = any>() => useContext<SimpleStore<T>>(SimpleContext)
 
-export const useSimpleStoreItem = <T extends {} = any>(props: UseSimpleStoreItemProps) => {
+export const useSimpleStoreItem = <T extends {} = any>(props: UseSimpleItemProps) => {
   const { path } = props
   const refUpdate = useUpdate()
   const simple = useContext<SimpleStore<T>>(SimpleContext)
@@ -67,6 +66,8 @@ export const useSimpleStoreItem = <T extends {} = any>(props: UseSimpleStoreItem
 
   return simple
 }
+
+export const useSimpleItem = useSimpleStoreItem
 
 export const useSimpleWatch = <T extends {} = any>(simple: SimpleStore<T>, path: PathTypes, fun?: (value: any) => void) => {
 
