@@ -27,8 +27,9 @@ export class SimpleStore<T extends {} = any> {
     return () => {
       this.componentList = this.componentList.filter((ite) => ite !== props)
       const { preserve = true } = props
+      const currentPath = getFormatPath(props.path)
       /**查询是否存在相同字段的组件*/
-      const finx = this.componentList.find((item) => getFormatPath(item.path) === getFormatPath(props.path))
+      const finx = this.componentList.find((item) => getFormatPath(item.path) === currentPath)
       /**当不存储 并且 没有相同字段组件的时候*/
       if (!preserve && !finx) {
         /**
