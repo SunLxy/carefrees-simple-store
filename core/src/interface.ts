@@ -1,5 +1,5 @@
 
-import type { SimpleStore } from "./store"
+import type { SimpleStore, MultipleSimpleStore } from "./store"
 
 export type PathTypes = number | string | (number | string)[]
 
@@ -19,6 +19,7 @@ export interface SimpleStoreProviderProps<T extends {} = any> {
   simple?: SimpleStore
   children?: React.ReactNode
   initialValue?: T
+  path?: string
 }
 
 export interface UseSimpleStoreItemProps {
@@ -28,4 +29,9 @@ export interface UseSimpleStoreItemProps {
 
 export interface UseSimpleItemProps extends UseSimpleStoreItemProps {
 
+}
+
+export interface MultipleSimplProviderProps {
+  multipleSimple?: MultipleSimpleStore
+  children?: React.ReactNode
 }

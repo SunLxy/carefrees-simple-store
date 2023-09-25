@@ -137,3 +137,29 @@ export class SimpleStore<T extends {} = any> {
 
 }
 
+export class MultipleSimpleStore {
+  /**数据存储*/
+  store: Map<string, SimpleStore> = new Map([])
+  storeMultiple: Map<string, MultipleSimpleStore> = new Map([])
+
+  /**注册*/
+  register = (path: string, simple: SimpleStore) => {
+    this.store.set(path, simple)
+  }
+
+  /**获取单个 simple */
+  getSimple = (path: string) => {
+    return this.store.get(path)
+  }
+
+  /**注册*/
+  registerMultiple = (path: string, multiplesimple: MultipleSimpleStore) => {
+    this.storeMultiple.set(path, multiplesimple)
+  }
+
+  /**获取单个 simple */
+  getMultipleSimple = (path: string) => {
+    return this.storeMultiple.get(path)
+  }
+
+}

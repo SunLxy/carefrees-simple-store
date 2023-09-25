@@ -2,13 +2,14 @@
 
 状态管理
 
-- [ ] 1. 定向更新组件
-- [ ] 2. 数据存储
-- [ ] 3. 监听值变化
+- [X] 1. 定向更新组件
+- [X] 2. 数据存储
+- [X] 3. 监听值变化
 
 ## 状态包裹组件
 
 - `SimpleStoreProvider`
+- `MultipleSimplProvider` 
 
 ## hooks
 
@@ -16,6 +17,8 @@
 - `useSimpleWatch` 监听值变化
 - `useSimple` 子组件中获取实例
 - `useSimpleItem` 子组件使用数据更新和取值
+- `useMultipleSimpleStore`实例化收集多个状态管理方法
+- `useMultipleSimple` 子组件中获取实例
 
 ## 参数
 
@@ -45,6 +48,7 @@ export declare class SimpleStore<T extends {} = any> {
     notice: (path: PathTypes) => void;
     /**
      * 批量更新组件，
+     *
      * 当不传递值的时候，更新所有组件
     */
     bathNotice: (paths?: string[] | boolean) => void;
@@ -61,31 +65,50 @@ export interface RegisterProps {
   preserve?: boolean
 }
 
+export declare class MultipleSimpleStore {
+    /**数据存储*/
+    store: Map<string, SimpleStore>;
+    /**注册*/
+    register: (path: string, simple: SimpleStore) => void;
+    /**获取单个 simple */
+    getSimple: (path: string) => SimpleStore<any>;
+}
+
 export interface RegisterWatchProps {
-  path: PathTypes,
-  update: (value: any) => void
+    path: PathTypes;
+    update: (value: any) => void;
 }
-
 export interface SimpleStoreProviderProps<T extends {} = any> {
-  simple?: SimpleStore
-  children?: React.ReactNode
-  initialValue?: T
+    simple?: SimpleStore;
+    children?: React.ReactNode;
+    initialValue?: T;
+    path?: string;
+}
+export interface UseSimpleStoreItemProps {
+    /**路径*/
+    path: PathTypes;
+}
+export interface UseSimpleItemProps extends UseSimpleStoreItemProps {
+}
+export interface MultipleSimplProviderProps {
+    multipleSimple?: MultipleSimpleStore;
+    children?: React.ReactNode;
 }
 
-export interface UseSimpleItemProps {
-  /**路径*/
-  path: PathTypes
-}
-
+import { SimpleStoreProviderProps, PathTypes, UseSimpleItemProps, MultipleSimplProviderProps } from "./interface";
 export declare const SimpleContext: import("react").Context<SimpleStore<any>>;
+export declare const MultipleSimpleContext: import("react").Context<MultipleSimpleStore>;
 export declare const useSimpleStore: <T extends {} = any>(simple?: SimpleStore) => SimpleStore<T>[];
+export declare const useMultipleSimpleStore: (multipleSimple?: MultipleSimpleStore) => MultipleSimpleStore[];
 export declare const SimpleStoreProvider: <T extends {} = any>(props: SimpleStoreProviderProps<T>) => import("react").FunctionComponentElement<import("react").ProviderProps<SimpleStore<any>>>;
+export declare const MultipleSimplProvider: (props: MultipleSimplProviderProps) => import("react").FunctionComponentElement<import("react").ProviderProps<MultipleSimpleStore>>;
 /**更新页面状态*/
 export declare const useUpdate: () => import("react").MutableRefObject<Function>;
 export declare const useSimple: <T extends {} = any>() => SimpleStore<T>;
+export declare const useMultipleSimple: () => MultipleSimpleStore;
+export declare const useSimpleStoreItem: <T extends {} = any>(props: UseSimpleItemProps) => SimpleStore<T>;
 export declare const useSimpleItem: <T extends {} = any>(props: UseSimpleItemProps) => SimpleStore<T>;
 export declare const useSimpleWatch: <T extends {} = any>(simple: SimpleStore<T>, path: PathTypes, fun?: (value: any) => void) => any;
-
 
 ```
 
