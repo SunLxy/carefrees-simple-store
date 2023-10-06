@@ -43,9 +43,12 @@ export const SimpleStoreProvider = <T extends {} = any>(props: SimpleStoreProvid
     }
   }, [])
 
-  useMemo(() => {
-    if (path)
-      multipleSimple.register(path, childSimple)
+  useEffect(() => {
+    let unRegister: () => void = () => void 0;
+    if (path) {
+      unRegister = multipleSimple.register(path, childSimple)
+    }
+    return () => unRegister?.()
   }, [path])
 
   return createElement(SimpleContext.Provider, {
