@@ -1,30 +1,29 @@
-import { useRef, useEffect, } from "react"
-import {
-  SelectorHookStore,
-  TSelectorState
-} from "../interface"
+import { useRef, useEffect, useState, } from "react"
+import { TSelectorState } from "../interface"
 import { useSimple } from "./simple"
-import { useSimplReducer } from "./useSimplReducer"
 
 export const createSelectorHook = <T = any>() => {
+
   return function useSelector<TStore = T, Selected = any>(
     selector: (state: TSelectorState) => Selected,
     equalityFn?: (a: any, b: any) => boolean
   ): Selected {
     const simple = useSimple<TStore>()
-    const refUpdate = useRef<(value: Selected) => void>()
-    refUpdate.current = (value: Selected) => {
-      dispatch({ data: value })
-    }
-    const [store, dispatch] = useSimplReducer<SelectorHookStore<Selected>>({
-      ...simple.registerSelector(selector, refUpdate.current, equalityFn)
-    })
+    const [, _update] = useState({})
+    const refUpdate = useRef<(value: Selected) => void>();
+    /**为了解决闭包照成的值不是最新问题*/
+    const refSelector = useRef(selector)
+    refSelector.current = selector
+    /**key值*/
+    const refKey = useRef({})
+    refUpdate.current = () => _update({})
 
     useEffect(() => {
+      const store = simple.registerSelector(refKey.current, refSelector.current, refUpdate.current, equalityFn)
       return () => store.unMount()
-    }, [])
+    }, [refKey.current])
 
-    return store.data
+    return simple.getSelectorValue(refKey.current) as Selected
   }
 }
 

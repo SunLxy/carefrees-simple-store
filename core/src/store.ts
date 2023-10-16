@@ -17,6 +17,7 @@ export class SimpleStore<T extends {} = any> {
 
   /**选择函数*/
   selectorList: SelectorListItemType[] = []
+  selectorMap: Map<Object, SelectorListItemType> = new Map([])
 
   /**设置初始值*/
   init = (initialValue?: T) => {
@@ -142,42 +143,43 @@ export class SimpleStore<T extends {} = any> {
     })
   }
 
+  //-------------------------- Selector 选择器部分--------------------------------------
+
   /**
-   * 选择器函数，存储状态中提取数据以供此组件
+   * 数据更新,执行选择器(暂时 直接手动调用)
   */
-  selector = () => {
-    this.selectorList.forEach((item) => {
-      /**进行数据对比更新*/
+  bathSelector = () => {
+    this.selectorMap.forEach((item) => {
+      const newValue = item.selector({ store: this.store, simple: this })
+      let isUpdate = true
+      if (typeof item.equalityFn === "function") {
+        isUpdate = item.equalityFn?.(item.preValue, newValue)
+      }
+      item.preValue = newValue;
+      if (isUpdate) {
+        item.updateData(newValue)
+      }
     })
   }
 
   /**注册 选择器函数，存储状态中提取数据以供此组件*/
   registerSelector = <TState, Selected>(
+    key: Object,
     selectorFn: SelectorListItemType<TState, Selected>["selector"],
     updateData: (value: Selected) => void,
     equalityFn?: (a: any, b: any) => boolean
   ) => {
     const preValue = selectorFn({ store: this.store, simple: this })
-    this.selectorList.push({ preValue, selector: selectorFn, updateData, equalityFn })
+    this.selectorMap.set(key, { preValue, selector: selectorFn, updateData, equalityFn })
     return {
       data: preValue,
-      unMount: () => {
-        /**卸载*/
-        this.selectorList = this.selectorList.filter((item) => selectorFn !== item.selector)
-      }
+      unMount: () => { this.selectorMap.delete(key) }
     }
   }
-
-  // selector = (selectorFn: SelectorListItemType['current'], updateData: (value: unknown) => void) => {
-  //   const preValue = selectorFn(this.store as any)
-  //   this.selectorList.push({ current: selectorFn, preValue })
-  //   /**值进行更新外部*/
-  //   updateData(preValue)
-  //   return () => {
-  //     /**卸载*/
-  //     this.selectorList = this.selectorList.filter((item) => selectorFn !== item.current)
-  //   }
-  // }
+  /**选择器 获取值*/
+  getSelectorValue = (key: Object) => {
+    return this.selectorMap.get(key).preValue
+  }
 
 }
 
