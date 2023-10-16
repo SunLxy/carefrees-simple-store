@@ -178,7 +178,7 @@ export class SimpleStore<T extends {} = any> {
   }
   /**选择器 获取值*/
   getSelectorValue = (key: Object) => {
-    return this.selectorMap.get(key).preValue
+    return this.selectorMap.get(key)?.preValue
   }
 
 }

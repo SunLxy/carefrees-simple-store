@@ -118,9 +118,11 @@ export declare const useSimpleWatch: <T extends {} = any>(simple: SimpleStore<T>
 import React from "react"
 import { SimpleStoreProvider, useSimpleItem } from "@carefrees/simple-store"
 
+
 const Child = (props: { index: number }) => {
   const { index } = props
   const simple = useSimpleItem({ path: index })
+
   // 这个值，当组件不重新渲染的时候，获取的值是老的，当重新渲染才是最新的
   const checkValue = simple.getValue("checkValue")
   const onClick = () => {
@@ -133,6 +135,7 @@ const Child = (props: { index: number }) => {
 
   return <button style={checkValue === index && { background: "red" } || {}} onClick={onClick} >点击{index}号</button>
 }
+
 
 const list = Array.from({ length: 10 }).map((_, index) => ({ index }))
 

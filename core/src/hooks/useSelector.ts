@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, } from "react"
+import { useRef, useEffect, useState, useMemo, } from "react"
 import { TSelectorState } from "../interface"
 import { useSimple } from "./simple"
 
@@ -17,10 +17,10 @@ export const createSelectorHook = <T = any>() => {
     /**key值*/
     const refKey = useRef({})
     refUpdate.current = () => _update({})
+    const storeRef = useRef(simple.registerSelector(refKey.current, refSelector.current, refUpdate.current, equalityFn))
 
     useEffect(() => {
-      const store = simple.registerSelector(refKey.current, refSelector.current, refUpdate.current, equalityFn)
-      return () => store.unMount()
+      return () => storeRef.current.unMount()
     }, [refKey.current])
 
     return simple.getSelectorValue(refKey.current) as Selected
