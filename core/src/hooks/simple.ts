@@ -1,6 +1,11 @@
 import { createContext, useRef, useContext, createElement, useState, useMemo, useEffect } from "react"
-import { SimpleStore, MultipleSimpleStore } from "./store"
-import { SimpleStoreProviderProps, PathTypes, UseSimpleItemProps, MultipleSimplProviderProps, } from "./interface"
+import { SimpleStore, MultipleSimpleStore } from "../store"
+import {
+  SimpleStoreProviderProps,
+  PathTypes,
+  UseSimpleItemProps,
+  MultipleSimplProviderProps,
+} from "../interface"
 
 export const SimpleContext = createContext(new SimpleStore())
 export const MultipleSimpleContext = createContext(new MultipleSimpleStore())

@@ -1,11 +1,11 @@
 import { getFormatPath, toArray, splitPath, getValue, setValue, merge } from "./utils"
-import { PathTypes, RegisterProps, RegisterWatchProps } from "./interface"
+import { PathTypes, RegisterProps, RegisterWatchProps, SelectorListItemType } from "./interface"
 
 /**状态存储*/
 export class SimpleStore<T extends {} = any> {
 
   /**值存储*/
-  private store: T = {} as T;
+  store: T = {} as T;
 
   private initialValue: T = {} as T;
 
@@ -14,6 +14,9 @@ export class SimpleStore<T extends {} = any> {
 
   /**监听字段值变化*/
   watchList: RegisterWatchProps[] = []
+
+  /**选择函数*/
+  selectorList: SelectorListItemType[] = []
 
   /**设置初始值*/
   init = (initialValue?: T) => {
@@ -57,8 +60,12 @@ export class SimpleStore<T extends {} = any> {
 
   /**更新值*/
   updateValue = <K = any>(path: PathTypes, value: K, notice: boolean | string[] = true) => {
-    this.store = setValue(this.store, toArray(path), value)
-    this.noticeWatch(path);
+    const preVaue = getValue(this.store, toArray(path));
+    this.store = setValue(this.store, toArray(path), value);
+    /**判断值相等 , 当相等的时候才进行更新监听的值*/
+    if (preVaue !== value)
+      this.noticeWatch(path);
+
     if (typeof notice === "boolean" && notice) {
       this.notice(path)
     } else if (Array.isArray(notice)) {
@@ -134,6 +141,43 @@ export class SimpleStore<T extends {} = any> {
       }
     })
   }
+
+  /**
+   * 选择器函数，存储状态中提取数据以供此组件
+  */
+  selector = () => {
+    this.selectorList.forEach((item) => {
+      /**进行数据对比更新*/
+    })
+  }
+
+  /**注册 选择器函数，存储状态中提取数据以供此组件*/
+  registerSelector = <TState, Selected>(
+    selectorFn: SelectorListItemType<TState, Selected>["selector"],
+    updateData: (value: Selected) => void,
+    equalityFn?: (a: any, b: any) => boolean
+  ) => {
+    const preValue = selectorFn({ store: this.store, simple: this })
+    this.selectorList.push({ preValue, selector: selectorFn, updateData, equalityFn })
+    return {
+      data: preValue,
+      unMount: () => {
+        /**卸载*/
+        this.selectorList = this.selectorList.filter((item) => selectorFn !== item.selector)
+      }
+    }
+  }
+
+  // selector = (selectorFn: SelectorListItemType['current'], updateData: (value: unknown) => void) => {
+  //   const preValue = selectorFn(this.store as any)
+  //   this.selectorList.push({ current: selectorFn, preValue })
+  //   /**值进行更新外部*/
+  //   updateData(preValue)
+  //   return () => {
+  //     /**卸载*/
+  //     this.selectorList = this.selectorList.filter((item) => selectorFn !== item.current)
+  //   }
+  // }
 
 }
 
