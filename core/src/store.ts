@@ -157,7 +157,7 @@ export class SimpleStore<T extends {} = any> {
       }
       item.preValue = newValue;
       if (!isNoUpdate) {
-        item.updateData()
+        item.updateData(newValue)
       }
     })
   }
@@ -166,7 +166,7 @@ export class SimpleStore<T extends {} = any> {
   registerSelector = <TState, Selected>(
     key: Object,
     selectorFn: SelectorListItemType<TState, Selected>["selector"],
-    updateData: () => void,
+    updateData: (value: Selected) => void,
     equalityFn?: (a: any, b: any) => boolean
   ) => {
     const preValue = selectorFn({ store: this.store, simple: this })
