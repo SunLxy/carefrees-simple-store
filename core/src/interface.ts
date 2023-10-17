@@ -58,7 +58,7 @@ export interface SelectorHookStore<Selected = unknown> {
 
 export interface SelectorListItemType<TState = unknown, Selected = unknown, T = any> {
   preValue: TState
-  updateData: (value: Selected) => void
+  updateData: () => void
   selector: (value: TSelectorState<T>) => Selected,
   equalityFn?: (a: TState, b: TState) => boolean
 }

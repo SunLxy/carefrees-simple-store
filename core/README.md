@@ -270,3 +270,57 @@ const Form = () => {
 export default Form
 
 ```
+
+## useSelector使用
+
+```tsx mdx:preview
+import React from "react"
+import { SimpleStoreProvider, useSimpleItem, useSimpleStore,useSimpleWatch ,useSelector} from "@carefrees/simple-store"
+
+const Item = (props: { name: string }) => {
+  const simple = useSimpleItem({ path: props.name })
+  const { value } = useSelector(({store})=>({ value:store[props.name] }))
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    const value = event.target.value
+    simple.updateValue(props.name, value,false)
+    /**手动触发 useSelector 执行选择器*/
+    simple.bathSelector()
+  }
+
+  console.log(`useSelector===${props.name}===>`,value)
+
+  return <input placeholder={`${props.name}`}  value={value || ''} onChange={onChange}  />
+}
+
+const Form = () => {
+
+  const [simple] = useSimpleStore()
+
+  const setValue = () => {
+    simple.updateValue("1号", new Date().getTime().toString(),false)
+    /**手动触发 useSelector 执行选择器*/
+    simple.bathSelector()
+  }
+
+  return <div>
+    <div>表单</div>
+    <hr />
+    <button onClick={setValue} >设置 1号值 </button>
+    <br />
+    <SimpleStoreProvider simple={simple} >
+      <Item name="1号" />
+      <Item name="2号" />
+      <Item name="3号" />
+      <Item name="4号" />
+      <Item name="5号" />
+      <Item name="5号" />
+      <Item name="6号" />
+      <Item name="6号" />
+    </SimpleStoreProvider>
+    <hr />
+  </div>
+}
+
+export default Form
+
+```

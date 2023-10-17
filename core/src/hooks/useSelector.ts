@@ -1,12 +1,13 @@
-import { useRef, useEffect, useState, useMemo, } from "react"
+import { useRef, useEffect, useState, } from "react"
 import { TSelectorState } from "../interface"
 import { useSimple } from "./simple"
+import { isEqual } from "./../utils"
 
 export const createSelectorHook = <T = any>() => {
 
   return function useSelector<TStore = T, Selected = any>(
     selector: (state: TSelectorState) => Selected,
-    equalityFn?: (a: any, b: any) => boolean
+    equalityFn: (a: any, b: any) => boolean = isEqual
   ): Selected {
     const simple = useSimple<TStore>()
     const [, _update] = useState({})

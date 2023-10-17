@@ -3,6 +3,7 @@ import { PathTypes } from "../interface"
 
 export * from "./getValue"
 export * from "./setValue"
+export * from "./isEqual"
 
 /**格式化路径*/
 export const getFormatPath = (path: PathTypes) => {

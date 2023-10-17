@@ -151,13 +151,13 @@ export class SimpleStore<T extends {} = any> {
   bathSelector = () => {
     this.selectorMap.forEach((item) => {
       const newValue = item.selector({ store: this.store, simple: this })
-      let isUpdate = true
+      let isNoUpdate = false
       if (typeof item.equalityFn === "function") {
-        isUpdate = item.equalityFn?.(item.preValue, newValue)
+        isNoUpdate = item.equalityFn?.(item.preValue, newValue)
       }
       item.preValue = newValue;
-      if (isUpdate) {
-        item.updateData(newValue)
+      if (!isNoUpdate) {
+        item.updateData()
       }
     })
   }
@@ -166,7 +166,7 @@ export class SimpleStore<T extends {} = any> {
   registerSelector = <TState, Selected>(
     key: Object,
     selectorFn: SelectorListItemType<TState, Selected>["selector"],
-    updateData: (value: Selected) => void,
+    updateData: () => void,
     equalityFn?: (a: any, b: any) => boolean
   ) => {
     const preValue = selectorFn({ store: this.store, simple: this })
