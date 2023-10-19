@@ -284,7 +284,7 @@ const Item = (props: { name: string }) => {
     const value = event.target.value
     simple.updateValue(props.name, value,false)
     /**手动触发 useSelector 执行选择器*/
-    simple.bathSelector()
+    simple.bathRunSelector()
   }
 
   console.log(`useSelector===${props.name}===>`,value)
@@ -299,7 +299,7 @@ const Form = () => {
   const setValue = () => {
     simple.updateValue("1号", new Date().getTime().toString(),false)
     /**手动触发 useSelector 执行选择器*/
-    simple.bathSelector()
+    simple.bathRunSelector()
   }
 
   return <div>

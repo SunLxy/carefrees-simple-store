@@ -16,7 +16,6 @@ export class SimpleStore<T extends {} = any> {
   watchList: RegisterWatchProps[] = []
 
   /**选择函数*/
-  selectorList: SelectorListItemType[] = []
   selectorMap: Map<Object, SelectorListItemType> = new Map([])
 
   /**设置初始值*/
@@ -144,11 +143,10 @@ export class SimpleStore<T extends {} = any> {
   }
 
   //-------------------------- Selector 选择器部分--------------------------------------
-
   /**
    * 数据更新,执行选择器(暂时 直接手动调用)
   */
-  bathSelector = () => {
+  bathRunSelector = () => {
     this.selectorMap.forEach((item) => {
       const newValue = item.selector({ store: this.store, simple: this })
       let isNoUpdate = false
@@ -176,11 +174,17 @@ export class SimpleStore<T extends {} = any> {
       unMount: () => { this.selectorMap.delete(key) }
     }
   }
+
   /**选择器 获取值*/
   getSelectorValue = (key: Object) => {
+    const selectorData = this.selectorMap.get(key)
+    if (selectorData) {
+      const preValue = selectorData?.selector({ store: this.store, simple: this })
+      selectorData.preValue = preValue;
+      this.selectorMap.set(key, selectorData);
+    }
     return this.selectorMap.get(key)?.preValue
   }
-
 }
 
 export class MultipleSimpleStore {

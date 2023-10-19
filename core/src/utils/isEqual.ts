@@ -1,27 +1,37 @@
 
-type VarType = string | number | boolean | Object | Function | Symbol | undefined | bigint
-
-function isObject(value: VarType) {
-  return (typeof value === 'object' && null !== value);
+function is(x: unknown, y: unknown) {
+  if (x === y) {
+    return x !== 0 || y !== 0 || 1 / x === 1 / y
+  } else {
+    return x !== x && y !== y
+  }
 }
 
-export function isEqual(value: VarType, other: VarType) {
-  // 1.判断是不是引用类型，不是引用
-  if (!isObject(value) || !isObject(other)) {
-    return value === other;
-  }
-  // 2.比较是否为同一个内存地址
-  if (value === other) return true;
-  // 3.比较 key 的数量
-  const valueKeysLength = Object.keys(value).length;
-  const otherKeysLength = Object.keys(other).length;
-  if (valueKeysLength !== otherKeysLength) return false;
+export function isEqual(objA: any, objB: any) {
+  if (is(objA, objB)) return true
 
-  // 4.比较 value 的值
-  if (typeof value === "object")
-    for (let key in value) {
-      const result = isEqual(value[key], other[key]);
-      if (!result) return false;
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+
+  const keysA = Object.keys(objA)
+  const keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) return false
+
+  for (let i = 0; i < keysA.length; i++) {
+    if (
+      !Object.prototype.hasOwnProperty.call(objB, keysA[i]) ||
+      !is(objA[keysA[i]], objB[keysA[i]])
+    ) {
+      return false
     }
-  return true;
+  }
+
+  return true
 }

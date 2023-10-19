@@ -16,12 +16,9 @@ export const createSelectorHook = <T = any>() => {
     const refSelector = useRef(selector)
     refSelector.current = selector
     /**key值*/
-    const refKey = useRef({})
+    const refKey = useRef(Symbol("useSelector"))
     refUpdate.current = () => _update({})
-
     const storeRef = useRef(simple.registerSelector(refKey.current, refSelector.current, refUpdate.current, equalityFn))
-    // const storeRef = useRef<{ unMount: () => void, data: Selected }>(undefined)
-    // storeRef.current = simple.registerSelector(refKey.current, refSelector.current, refUpdate.current, equalityFn)
 
     useEffect(() => {
       return () => storeRef.current?.unMount()
