@@ -10,11 +10,13 @@ export class Base_SimpleStore {
 
   /**获取数组数据*/
   private _get_list = <K>(field: string): K[] => {
-    return this[field] || []
+    this[field] = this[field] || []
+    return this[field]
   }
   /**获取对象数据*/
   private _get_store = <R = any>(field: string): R => {
-    return this[field] || {}
+    this[field] = this[field] || {}
+    return this[field]
   }
 
   /**基础创建方法=====>注册组件*/
