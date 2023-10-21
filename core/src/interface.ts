@@ -1,7 +1,8 @@
 
 import type { SimpleStore, MultipleSimpleStore } from "./store"
+import type { Base_SimpleStore } from "./base/base_store"
 
-export type IntType = string | number | boolean
+export type IntType = string | number | boolean | symbol
 
 export type PathTypes = number | string | (number | string)[]
 
@@ -48,7 +49,7 @@ export interface SelectorFn {
 
 export interface TSelectorState<T = any> {
   store: T,
-  simple: SimpleStore
+  simple: SimpleStore | Base_SimpleStore
 }
 
 export interface SelectorHookStore<Selected = unknown> {

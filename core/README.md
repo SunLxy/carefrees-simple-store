@@ -301,6 +301,7 @@ const Form = () => {
     /**手动触发 useSelector 执行选择器*/
     simple.bathRunSelector()
   }
+  console.log("simple====>",simple)
 
   return <div>
     <div>表单</div>

@@ -1,8 +1,10 @@
 import { getFormatPath, toArray, splitPath, getValue, setValue, merge } from "./utils"
 import { PathTypes, RegisterProps, RegisterWatchProps, SelectorListItemType } from "./interface"
+import { Base_SimpleStore } from "./base/base_store"
+
 
 /**状态存储*/
-export class SimpleStore<T extends {} = any> {
+export class SimpleStore<T extends {} = any> extends Base_SimpleStore {
 
   /**值存储*/
   store: T = {} as T;
@@ -16,7 +18,7 @@ export class SimpleStore<T extends {} = any> {
   watchList: RegisterWatchProps[] = []
 
   /**选择函数*/
-  selectorMap: Map<Object, SelectorListItemType> = new Map([])
+  selectorMap: Map<Symbol | Object, SelectorListItemType> = new Map([])
 
   /**设置初始值*/
   init = (initialValue?: T) => {
