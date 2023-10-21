@@ -1,4 +1,4 @@
-import { PathTypes, RegisterProps, RegisterWatchProps, IntType, SelectorListItemType } from "../interface"
+import { PathTypes, RegisterProps, RegisterWatchProps, Base_SelectorListItemType } from "../interface"
 import { getFormatPath, toArray, getValue, setValue, splitPath, merge } from "../utils"
 
 export class Base_SimpleStore {
@@ -31,7 +31,7 @@ export class Base_SimpleStore {
    * 基础创建方法=====>获取 Map 对象数据
    * @param field 字段
    * */
-  _get_map = (field: string): Map<Symbol | Object, SelectorListItemType> => {
+  _get_map = (field: string): Map<Symbol | Object, Base_SelectorListItemType> => {
     this[field] = this[field] || new Map([])
     return this[field]
   }
@@ -222,7 +222,6 @@ export class Base_SimpleStore {
     this[storeField] = merge(this._get_store(initialField), this._get_store(storeField))
   }
 
-
   //-------------------------- Selector 选择器部分--------------------------------------
   /**
    * 基础创建方法=====> 数据更新,执行选择器(暂时 直接手动调用)
@@ -257,7 +256,7 @@ export class Base_SimpleStore {
     selectorMapField: string,
     storeField: string,
     key: Object | Symbol,
-    selectorFn: SelectorListItemType<TState, Selected>["selector"],
+    selectorFn: Base_SelectorListItemType<TState, Selected>["selector"],
     updateData: (value: Selected) => void,
     equalityFn?: (a: any, b: any) => boolean,
   ) => {

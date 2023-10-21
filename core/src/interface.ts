@@ -39,8 +39,6 @@ export interface MultipleSimplProviderProps {
   children?: React.ReactNode
 }
 
-
-
 export interface SelectorFn {
   <TState = unknown, Selected = unknown>(
     selector: (state: TState) => Selected,
@@ -61,5 +59,17 @@ export interface SelectorListItemType<TState = unknown, Selected = unknown, T = 
   preValue: TState
   updateData: (value: Selected) => void
   selector: (value: TSelectorState<T>) => Selected,
+  equalityFn?: (a: TState, b: TState) => boolean
+}
+
+export interface Base_TSelectorState<T = any> {
+  store: T,
+  simple: Base_SimpleStore
+}
+
+export interface Base_SelectorListItemType<TState = unknown, Selected = unknown, T = any> {
+  preValue: TState
+  updateData: (value: Selected) => void
+  selector: (value: Base_TSelectorState<T>) => Selected,
   equalityFn?: (a: TState, b: TState) => boolean
 }
