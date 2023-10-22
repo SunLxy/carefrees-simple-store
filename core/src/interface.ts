@@ -1,6 +1,6 @@
 
 import type { SimpleStore, MultipleSimpleStore } from "./store"
-import type { Base_SimpleStore } from "./base/base_store"
+export type { CSTU_Instance } from "@carefrees/simple-store-utils"
 
 export type IntType = string | number | boolean | symbol
 
@@ -47,7 +47,7 @@ export interface SelectorFn {
 
 export interface TSelectorState<T = any> {
   store: T,
-  simple: SimpleStore | Base_SimpleStore
+  simple: SimpleStore
 }
 
 export interface SelectorHookStore<Selected = unknown> {
@@ -59,17 +59,5 @@ export interface SelectorListItemType<TState = unknown, Selected = unknown, T = 
   preValue: TState
   updateData: (value: Selected) => void
   selector: (value: TSelectorState<T>) => Selected,
-  equalityFn?: (a: TState, b: TState) => boolean
-}
-
-export interface Base_TSelectorState<T = any> {
-  store: T,
-  simple: Base_SimpleStore
-}
-
-export interface Base_SelectorListItemType<TState = unknown, Selected = unknown, T = any> {
-  preValue: TState
-  updateData: (value: Selected) => void
-  selector: (value: Base_TSelectorState<T>) => Selected,
   equalityFn?: (a: TState, b: TState) => boolean
 }
