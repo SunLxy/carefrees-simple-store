@@ -1,10 +1,9 @@
 import { getFormatPath, toArray, splitPath, getValue, setValue, merge } from "./utils"
 import { PathTypes, RegisterProps, RegisterWatchProps, SelectorListItemType } from "./interface"
-import { Base_SimpleStore } from "./base/base_store"
-
+import { CSTU_Instance } from "@carefrees/simple-store-utils"
 
 /**状态存储*/
-export class SimpleStore<T extends {} = any> extends Base_SimpleStore {
+export class SimpleStore<T extends {} = any> extends CSTU_Instance {
 
   /**值存储*/
   store: T = {} as T;
