@@ -18,7 +18,7 @@ export const toArray = (path: PathTypes) => {
   if (Array.isArray(path)) {
     return path
   }
-  return [path]
+  return splitPath(`${path}`)
 }
 
 /**路径字符串转换成数组*/
