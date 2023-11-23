@@ -19,7 +19,7 @@
     "watch": "tsbb watch"
   },
   "dependencies": {
-    "@carefrees/simple-store-utils": "^0.0.13"
+    "@carefrees/simple-store-utils": "^0.0.14"
   },
   "devDependencies": {
     "@types/react": "~18.2.15",
