@@ -275,11 +275,11 @@ export default Form
 
 ```tsx mdx:preview
 import React from "react"
-import { SimpleStoreProvider, useSimpleItem, useSimpleStore,useSimpleWatch ,useSelector} from "@carefrees/simple-store"
+import { SimpleStoreProvider, useSimpleItem, useSimpleStore,useSimpleWatch ,useSelector } from "@carefrees/simple-store"
 
 const Item = (props: { name: string }) => {
   const simple = useSimpleItem({ path: props.name })
-  const { value } = useSelector(({store})=>({ value:store[props.name] }))
+  const { value } = useSelector(({ instance })=> ({ value:instance.store[props.name] }))
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value
     simple.updateValue(props.name, value,false)
@@ -287,7 +287,7 @@ const Item = (props: { name: string }) => {
     simple.bathRunSelector()
   }
 
-  console.log(`useSelector===${props.name}===>`,value)
+  console.log(`useSelector===${props.name}===>`,simple,value)
 
   return <input placeholder={`${props.name}`}  value={value || ''} onChange={onChange}  />
 }

@@ -1,6 +1,6 @@
 import { getFormatPath, toArray, splitPath, getValue, setValue, merge } from "./utils"
-import { PathTypes, RegisterProps, RegisterWatchProps, SelectorListItemType } from "./interface"
-import { CSTU_Instance } from "@carefrees/simple-store-utils"
+import { PathTypes, RegisterProps, RegisterWatchProps } from "./interface"
+import { CSTU_Instance, ListenerType } from "@carefrees/simple-store-utils"
 
 /**状态存储*/
 export class SimpleStore<T extends {} = any> extends CSTU_Instance {
@@ -17,7 +17,7 @@ export class SimpleStore<T extends {} = any> extends CSTU_Instance {
   watchList: RegisterWatchProps[] = []
 
   /**选择函数*/
-  selectorMap: Map<Symbol | Object, SelectorListItemType> = new Map([])
+  listenerSetData: Set<ListenerType<SimpleStore<T>>> = new Set([])
 
   /**设置初始值*/
   init = (initialValue?: T) => {
@@ -148,43 +148,7 @@ export class SimpleStore<T extends {} = any> extends CSTU_Instance {
    * 数据更新,执行选择器(暂时 直接手动调用)
   */
   bathRunSelector = () => {
-    this.selectorMap.forEach((item) => {
-      const newValue = item.selector({ store: this.store, simple: this })
-      let isNoUpdate = false
-      if (typeof item.equalityFn === "function") {
-        isNoUpdate = item.equalityFn?.(item.preValue, newValue)
-      }
-      item.preValue = newValue;
-      if (!isNoUpdate) {
-        item.updateData(newValue)
-      }
-    })
-  }
-
-  /**注册 选择器函数，存储状态中提取数据以供此组件*/
-  registerSelector = <TState, Selected>(
-    key: Object,
-    selectorFn: SelectorListItemType<TState, Selected>["selector"],
-    updateData: (value: Selected) => void,
-    equalityFn?: (a: any, b: any) => boolean
-  ) => {
-    const preValue = selectorFn({ store: this.store, simple: this })
-    this.selectorMap.set(key, { preValue, selector: selectorFn, updateData, equalityFn })
-    return {
-      data: preValue,
-      unMount: () => { this.selectorMap.delete(key) }
-    }
-  }
-
-  /**选择器 获取值*/
-  getSelectorValue = (key: Object) => {
-    const selectorData = this.selectorMap.get(key)
-    if (selectorData) {
-      const preValue = selectorData?.selector({ store: this.store, simple: this })
-      selectorData.preValue = preValue;
-      this.selectorMap.set(key, selectorData);
-    }
-    return this.selectorMap.get(key)?.preValue
+    this._crate_CSTU_RunSubscribe("listenerSetData")
   }
 }
 
